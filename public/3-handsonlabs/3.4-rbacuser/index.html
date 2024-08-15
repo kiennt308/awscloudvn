@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en" class="js csstransforms3d">
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.132.0">
+    <meta name="description" content="">
+<meta name="author" content="kiennt.sg@gmail.com">
+
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+
+    <title>Regulating Access to API Resources with RBAC :: Never stop trying</title>
+
+    
+    <link href="/css/nucleus.css?1723707792" rel="stylesheet">
+    <link href="/css/fontawesome-all.min.css?1723707792" rel="stylesheet">
+    <link href="/css/hybrid.css?1723707792" rel="stylesheet">
+    <link href="/css/featherlight.min.css?1723707792" rel="stylesheet">
+    <link href="/css/perfect-scrollbar.min.css?1723707792" rel="stylesheet">
+    <link href="/css/auto-complete.css?1723707792" rel="stylesheet">
+    <link href="/css/atom-one-dark-reasonable.css?1723707792" rel="stylesheet">
+    <link href="/css/theme.css?1723707792" rel="stylesheet">
+    <link href="/css/hugo-theme.css?1723707792" rel="stylesheet">
+    
+    <link href="/css/theme-workshop.css?1723707792" rel="stylesheet">
+    
+    
+
+    <script src="/js/jquery-3.3.1.min.js?1723707792"></script>
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="/3-handsonlabs/3.4-rbacuser/">
+    <nav id="sidebar" class="showVisitedLinks">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <a id="logo" href="/">
+
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 30" width="30%"><defs><style>.cls-1{fill:#fff;}.cls-2{fill:#f90;fill-rule:evenodd;}</style></defs><title>AWS-Logo_White-Color</title><path class="cls-1" d="M14.09,10.85a4.7,4.7,0,0,0,.19,1.48,7.73,7.73,0,0,0,.54,1.19.77.77,0,0,1,.12.38.64.64,0,0,1-.32.49l-1,.7a.83.83,0,0,1-.44.15.69.69,0,0,1-.49-.23,3.8,3.8,0,0,1-.6-.77q-.25-.42-.51-1a6.14,6.14,0,0,1-4.89,2.3,4.54,4.54,0,0,1-3.32-1.19,4.27,4.27,0,0,1-1.22-3.2A4.28,4.28,0,0,1,3.61,7.75,6.06,6.06,0,0,1,7.69,6.46a12.47,12.47,0,0,1,1.76.13q.92.13,1.91.36V5.73a3.65,3.65,0,0,0-.79-2.66A3.81,3.81,0,0,0,7.86,2.3a7.71,7.71,0,0,0-1.79.22,12.78,12.78,0,0,0-1.79.57,4.55,4.55,0,0,1-.58.22l-.26,0q-.35,0-.35-.52V2a1.09,1.09,0,0,1,.12-.58,1.2,1.2,0,0,1,.47-.35A10.88,10.88,0,0,1,5.77.32,10.19,10.19,0,0,1,8.36,0a6,6,0,0,1,4.35,1.35,5.49,5.49,0,0,1,1.38,4.09ZM7.34,13.38a5.36,5.36,0,0,0,1.72-.31A3.63,3.63,0,0,0,10.63,12,2.62,2.62,0,0,0,11.19,11a5.63,5.63,0,0,0,.16-1.44v-.7a14.35,14.35,0,0,0-1.53-.28,12.37,12.37,0,0,0-1.56-.1,3.84,3.84,0,0,0-2.47.67A2.34,2.34,0,0,0,5,11a2.35,2.35,0,0,0,.61,1.76A2.4,2.4,0,0,0,7.34,13.38Zm13.35,1.8a1,1,0,0,1-.64-.16,1.3,1.3,0,0,1-.35-.65L15.81,1.51a3,3,0,0,1-.15-.67.36.36,0,0,1,.41-.41H17.7a1,1,0,0,1,.65.16,1.4,1.4,0,0,1,.33.65l2.79,11,2.59-11A1.17,1.17,0,0,1,24.39.6a1.1,1.1,0,0,1,.67-.16H26.4a1.1,1.1,0,0,1,.67.16,1.17,1.17,0,0,1,.32.65L30,12.39,32.88,1.25A1.39,1.39,0,0,1,33.22.6a1,1,0,0,1,.65-.16h1.54a.36.36,0,0,1,.41.41,1.36,1.36,0,0,1,0,.26,3.64,3.64,0,0,1-.12.41l-4,12.86a1.3,1.3,0,0,1-.35.65,1,1,0,0,1-.64.16H29.25a1,1,0,0,1-.67-.17,1.26,1.26,0,0,1-.32-.67L25.67,3.64,23.11,14.34a1.26,1.26,0,0,1-.32.67,1,1,0,0,1-.67.17Zm21.36.44a11.28,11.28,0,0,1-2.56-.29,7.44,7.44,0,0,1-1.92-.67,1,1,0,0,1-.61-.93v-.84q0-.52.38-.52a.9.9,0,0,1,.31.06l.42.17a8.77,8.77,0,0,0,1.83.58,9.78,9.78,0,0,0,2,.2,4.48,4.48,0,0,0,2.43-.55,1.76,1.76,0,0,0,.86-1.57,1.61,1.61,0,0,0-.45-1.16A4.29,4.29,0,0,0,43,9.22l-2.41-.76A5.15,5.15,0,0,1,38,6.78a3.94,3.94,0,0,1-.83-2.41,3.7,3.7,0,0,1,.45-1.85,4.47,4.47,0,0,1,1.19-1.37A5.27,5.27,0,0,1,40.51.29,7.4,7.4,0,0,1,42.6,0a8.87,8.87,0,0,1,1.12.07q.57.07,1.08.19t.95.26a4.27,4.27,0,0,1,.7.29,1.59,1.59,0,0,1,.49.41.94.94,0,0,1,.15.55v.79q0,.52-.38.52a1.76,1.76,0,0,1-.64-.2,7.74,7.74,0,0,0-3.2-.64,4.37,4.37,0,0,0-2.21.47,1.6,1.6,0,0,0-.79,1.48,1.58,1.58,0,0,0,.49,1.18,4.94,4.94,0,0,0,1.83.92L44.55,7a5.08,5.08,0,0,1,2.57,1.6A3.76,3.76,0,0,1,47.9,11a4.21,4.21,0,0,1-.44,1.93,4.4,4.4,0,0,1-1.21,1.47,5.43,5.43,0,0,1-1.85.93A8.25,8.25,0,0,1,42.05,15.62Z"></path><path class="cls-2" d="M45.19,23.81C39.72,27.85,31.78,30,25,30A36.64,36.64,0,0,1,.22,20.57c-.51-.46-.06-1.09.56-.74A49.78,49.78,0,0,0,25.53,26.4,49.23,49.23,0,0,0,44.4,22.53C45.32,22.14,46.1,23.14,45.19,23.81Z"></path><path class="cls-2" d="M47.47,21.21c-.7-.9-4.63-.42-6.39-.21-.53.06-.62-.4-.14-.74,3.13-2.2,8.27-1.57,8.86-.83s-.16,5.89-3.09,8.35c-.45.38-.88.18-.68-.32C46.69,25.8,48.17,22.11,47.47,21.21Z"></path></svg>
+
+</a>
+
+    </div>
+    
+        <div class="searchbox">
+    <label for="search-by"><i class="fas fa-search"></i></label>
+    <input data-search-input id="search-by" type="search" placeholder="Search...">
+    <span data-search-clear=""><i class="fas fa-times"></i></span>
+</div>
+
+<script type="text/javascript" src="/js/lunr.min.js?1723707792"></script>
+<script type="text/javascript" src="/js/auto-complete.js?1723707792"></script>
+<script type="text/javascript">
+    
+        var baseurl = "\/\/localhost:1313\/";
+    
+</script>
+<script type="text/javascript" src="/js/search.js?1723707792"></script>
+
+    
+  </div>
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/1-introduce/" title="Giới thiệu" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/1-introduce/">
+           <b> 1. </b> Giới thiệu
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/2-prerequiste/" title="Các bước chuẩn bị" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/2-prerequiste/">
+           <b> 2. </b> Các bước chuẩn bị
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/2-prerequiste/2.1-createvpc/" title="Chuẩn bị VPC và Security Group" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/2-prerequiste/2.1-createvpc/">
+           <b> 2.1 </b> Chuẩn bị VPC và Security Group
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/2-prerequiste/2.2-createcfn/" title="Tạo Stack Cloudformation" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/2-prerequiste/2.2-createcfn/">
+           <b> 2.2 </b> Tạo Stack Cloudformation
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/3-handsonlabs/" title="Hands on Labs " class="dd-item 
+        parent
+        
+        
+        ">
+      <a href="/3-handsonlabs/">
+           <b> 3. </b> Hands on Labs 
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/3-handsonlabs/3.1-createk8s/" title="Creating a Single-Master Cluster with Kubeadm" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/3-handsonlabs/3.1-createk8s/">
+           <b> 3.1. </b> Creating a Single-Master Cluster with Kubeadm
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/3-handsonlabs/3.2-upgradecluster/" title="Upgrading a Single-Master Cluster Version with Kubeadm" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/3-handsonlabs/3.2-upgradecluster/">
+           <b> 3.2. </b> Upgrading a Single-Master Cluster Version with Kubeadm
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/3-handsonlabs/3.3-backuprestoreetcd/" title="Backing Up and Restoring etcd" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/3-handsonlabs/3.3-backuprestoreetcd/">
+           <b> 3.3. </b> Backing Up and Restoring etcd
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/3-handsonlabs/3.4-rbacuser/" title="Regulating Access to API Resources with RBAC" class="dd-item 
+        
+        active
+        
+        ">
+      <a href="/3-handsonlabs/3.4-rbacuser/">
+           <b> 3.4. </b> Regulating Access to API Resources with RBAC
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/4-cleanup/" title="Dọn dẹp tài nguyên  " class="dd-item 
+        
+        
+        
+        ">
+      <a href="/4-cleanup/">
+          <b>6. </b>Dọn dẹp tài nguyên  
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+         
+    </ul>
+
+    
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+        <li>
+          <a class="padding">
+            <i class="fas fa-language fa-fw"></i>
+          <div class="select-style">
+            <select id="select-language" onchange="location = this.value;">
+          
+          
+          
+              
+              
+                  
+              
+                  
+              
+          
+        </select>
+        <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+          width="255px" height="255px" viewBox="0 0 255 255" style="enable-background:new 0 0 255 255;" xml:space="preserve">
+          <g>
+            <g id="arrow-drop-down">
+              <polygon points="0,63.75 127.5,191.25 255,63.75 		" />
+            </g>
+          </g>
+        </svg>
+        </div>
+        </a>
+        </li>
+      
+      
+      
+        <li><a class="padding" href="#" data-clear-history-toggle=""><i class="fas fa-history fa-fw"></i> Clear History</a></li>
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <left>
+    
+     <b> Workshop</b> <br>
+   
+</left>
+<left>
+    <br>
+    <br>
+        <b> Last Updated </b> <br>
+        <i><font color=orange>22-08-2024</font></i>
+    </left>
+    <left>
+        <br>
+        <br>
+            <b> Team </b> <br>
+           
+            <i> <a href="ihcloudvn.com"  style="color:orange">Kiên Nguyễn  </a> <br>
+                <a href="chatgpt.com"  style="color:orange">ChatGPT </a> <br>
+                <a href="google.com"  style="color:orange">Google </a>
+               
+        </i>
+        </left>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    </section>
+  </div>
+</nav>
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='/'>Kubernetes on AWS</a> > <a href='/3-handsonlabs/'>Hands on Labs </a> > Regulating Access to API Resources with RBAC
+          
+        
+          
+        
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#tại-sao-lại-cần-phải-phân-quyền-quản-trị-trong-k8s">Tại sao lại cần phải phân quyền quản trị trong K8s</a></li>
+        <li><a href="#tiếp-theo-ta-tiến-hành-phân-quyền-cho-k8s-sử-dụng-rbac"><strong>Tiếp theo ta tiến hành phân quyền cho K8s sử dụng RBAC</strong></a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              Regulating Access to API Resources with RBAC
+            </h1>
+          
+
+        
+
+
+
+	<h3 id="tại-sao-lại-cần-phải-phân-quyền-quản-trị-trong-k8s">Tại sao lại cần phải phân quyền quản trị trong K8s</h3>
+<p>Hãy tưởng tượng ta gặp trường hợp như sau. Công ty ta có một Kubernetes Cluster với hai môi trường pro và dev. Với pro cho môi trường sản phẩm thực tế và dev dùng để phát triển sản phẩm.</p>
+<p>Trước giờ bạn chỉ làm một mình và có toàn bộ quyền để quản lý Kubernetes Cluster, mỗi lần Developer muốn làm gì đều phải thông qua bạn, kể cả xem logs.</p>
+<p>Sếp bạn thấy vậy hơi bất tiện nên kêu bạn tìm cách làm thế nào để mấy bạn Developer có thể tự liệt kê ứng dụng và xem poda ở dưới môi trường dev.</p>
+<p><strong>Giải pháp</strong>
+Ta dùng Role-based access control (RBAC) để giải quyết vấn đề trên.</p>
+<p><strong>Mục tiêu</strong>:</p>
+<ul>
+<li>Hiểu được phương pháp phân quyền quản trị tài nguyên K8s thông qua user</li>
+<li>Xử lý lỗi nếu có</li>
+</ul>
+<p><strong>Thiết lập môi trường</strong></p>
+<ul>
+<li>Sử dụng lại môi trường trong Lab3.2
+
+<div class="notices info" ><p>Lưu ý: Các bạn xem lại Lab 3.2 để thiết lập môi trường.</p>
+</div>
+</li>
+</ul>
+<p>Các bạn login vào EC2 Cluster Node với user là ubuntu, kiểm tra K8s bằng lệnh sau:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get node
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/064.png"></p>
+<h3 id="tiếp-theo-ta-tiến-hành-phân-quyền-cho-k8s-sử-dụng-rbac"><strong>Tiếp theo ta tiến hành phân quyền cho K8s sử dụng RBAC</strong></h3>
+<ol>
+<li>Trên EC2 Cluster tạo 2 user, user &ldquo;devuser&rdquo;</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo su
+</span></span><span style="display:flex;"><span>sudo adduser devuser <span style="color:#75715e">#password: admin123</span>
+</span></span><span style="display:flex;"><span>sudo usermod -aG sudo devuser
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/065.png"></p>
+<ol start="2">
+<li>Tạo certification cho user devuser:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo su - ubuntu
+</span></span><span style="display:flex;"><span>openssl genrsa -out devuser.pem
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/066.png"></p>
+<p>Tạo Create a Certificate Signing Request (CSR) cho devuser:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo su - ubuntu
+</span></span><span style="display:flex;"><span>openssl req -new -key devuser.pem -out devuser.csr -subj <span style="color:#e6db74">&#34;/CN=devuser&#34;</span>
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/067.png"></p>
+<ol start="3">
+<li>Encode base64 CSR user devuser:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>cat devuser.csr | base64 | tr -d <span style="color:#e6db74">&#34;\n&#34;</span> <span style="color:#75715e"># output csr encode-base64 text</span>
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/068.png"></p>
+<p><strong>Output</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>LS0tLS1CRUdJTiBDRVJUSUZJQ0FURSBSRVFVRVNULS0tLS0KTUlJQ1Z6Q0NBVDhDQVFBd0VqRVFNQTRHQTFVRUF3d0haR1YyZFhObGNqQ0NBU0l3RFFZSktvWklodmNOQVFFQgpCUUFEZ2dFUEFEQ0NBUW9DZ2dFQkFQZ3dYb3J0V3BCemsxSHg3eVYyM1NkSW1rT1p3Ui90QzNja0ZMOWRLcDhTCk1HU3dSQy9VeS9lMlY5OVlSS3A1Qk5IeXhsekNYQ3QwRCs1UHZqR2hwWnlURjlBYkFtQXduN01RRWtWT29sbXoKRC9aTEdtQ2lhOFh0N1RTYnUxbFMweUtGWkcwRDNYdEtZYVA1Rnk0SWJpWEsxd0luSnk1Vk9ycnBvYkk4UG96WgoxOWlmek9HcGFGRythUEg2d0ZPa0NveWU5cXJBaFg5dUpjVzVJSlFPRnNBQ2RUWjVCcFZBOE5jUkdDZzF3K01DClFWSjdXZGtVNjc5bEllTjlZSFZ6UVBOK1gxdkhnSElaTG4wSXcxcWVNUUFWMG5odlBnNTA3MXZEL1lhQkxFcGMKL0VNKzlVSUxFQ2RSMTB1MWtwMnV3WmxGQ3QraXg0UlJ0R1htbHlBWlEzMENBd0VBQWFBQU1BMEdDU3FHU0liMwpEUUVCQ3dVQUE0SUJBUUFHa3lDMUxKMk45QUNoRDk1L1VOdGxCQ1ZpbDE4MVRSc3pTOTFhbzJYM1BudlFVOUFrCmJNekJaY3lKSGo0cnY4ZkFEalV6WnJQb205cjJCZnIvbXRVdmduZzRBTk90U0ViUWY0UHN6SEdYdVRianJ1aU8KcFo5VWxBdE9iOUpWQm1ya1hIdjFFVXRDdyt5azZlMkJjUVZ1T01SdXdBWGFYSDBKR0tlcENsemlqM21CSnhzOQorYTFNaVdCSmpLWGMzc3VCaVovNWFMZXp6aG1uR3JBU0tTaEFBMjVOcGtoR0FTc3NvMEVWQUpmclBXRVNEK2NkCm81bVFxT1QvdlhvTDh0cFVyMUF1ZTNiaFA3RWI0TGdqaVp3U29mVjh6ZDZnbFBDVG1QQjB5blBnYXBGcXFmOWwKOWhnZEl4dXhRdFZWa2s5UlZ6ZTB6UUhwT0s4WGtwSjRIcEVSCi0tLS0tRU5EIENFUlRJRklDQVRFIFJFUVVFU1QtLS0tLQo<span style="color:#f92672">=</span>
+</span></span></code></pre></div><ol start="4">
+<li>&ldquo;Đăng ký &ldquo;&ldquo;CertificateSigningRequest&rdquo;&rdquo; trên cụm K8s</li>
+</ol>
+<p>Tạo file &ldquo;&ldquo;devuserSigningRequest.yaml&rdquo;&rdquo;:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">certificates.k8s.io/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">CertificateSigningRequest</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">devuser</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">spec</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">request</span>: <span style="color:#ae81ff">&lt;base64_encoded_csr&gt;</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">signerName</span>: <span style="color:#ae81ff">kubernetes.io/kube-apiserver-client</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">expirationSeconds</span>: <span style="color:#ae81ff">86400</span>  <span style="color:#75715e"># one day</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">usages</span>:
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">digital signature</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">key encipherment</span>
+</span></span><span style="display:flex;"><span>  - <span style="color:#ae81ff">client auth</span>
+</span></span></code></pre></div><p>Trong đó <strong>&lt;base64_encoded_csr&gt;</strong> chính là output của bước 3.</p>
+<p><img alt="Cfn" src="/images/069.png"></p>
+<p>Sau đó chạy lệnh đăng ký trên K8s:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl apply -f devuserSigningRequest.yaml
+</span></span></code></pre></div><p>Kiểm tra trạng thái csr:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get csr
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/070.png"></p>
+<ol start="5">
+<li>Ta thấy trong cột điều kiện đang thể hiện trạng thái pending chờ được approve từ admin:</li>
+</ol>
+<p>Approve cho user devuser</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl certificate approve devuser
+</span></span></code></pre></div><p>Sau khi appove tiến hành kiểm tra lại csr:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get csr/devuser
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/071.png"></p>
+<ol start="6">
+<li>Tạo xác thực cho user devuser:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get csr/devuser -o jsonpath<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;&#34;</span><span style="color:#f92672">{</span>.status.certificate<span style="color:#f92672">}</span><span style="color:#e6db74">&#34;&#34;</span> | base64 -d &gt; devuser.crt
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/072.png"></p>
+<ol start="7">
+<li>Tạo config file cho user <strong>devuser</strong>:</li>
+</ol>
+<p>Lấy server url:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl config view
+</span></span><span style="display:flex;"><span>kubectl config view -o jsonpath<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;{.clusters[0].cluster.server}&#34;</span> <span style="color:#75715e">#output is url kubernetes api</span>
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/073.png"></p>
+<p><strong>Output</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>https://10.0.1.45:6443
+</span></span></code></pre></div><p>Cấu hình config cho user <strong>devuser</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo kubectl --kubeconfig ~/.kube/config-devuser config set-cluster devuser-cluster --insecure-skip-tls-verify<span style="color:#f92672">=</span>true --server<span style="color:#f92672">=</span>https://10.0.1.45:6443
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/074.png"></p>
+<ol start="8">
+<li>Tạo credentials cho user <strong>devuser</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo kubectl --kubeconfig ~/.kube/config-devuser config set-credentials devuser --client-certificate<span style="color:#f92672">=</span>devuser.crt --client-key<span style="color:#f92672">=</span>devuser.pem --embed-certs<span style="color:#f92672">=</span>true
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/075.png"></p>
+<ol start="9">
+<li>Tạo context cho user &ldquo;devuser&rdquo;:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo kubectl --kubeconfig ~/.kube/config-devuser config set-context devuser-context --cluster<span style="color:#f92672">=</span>devuser-cluster --user<span style="color:#f92672">=</span>devuser
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/076.png"></p>
+<ol start="10">
+<li>Đăng ký context cho cụm K8s:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo kubectl --kubeconfig ~/.kube/config-devuser config use-context devuser-context
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/077.png"></p>
+<ol start="11">
+<li>Thêm quyền xr cho file <strong>config-devuser</strong>:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo chmod +xr config-devuser
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/078.png"></p>
+<ol start="12">
+<li>Tạo roles và rolebindings cho user <strong>devuser</strong>:</li>
+</ol>
+<p>Writing RBAC Rules</p>
+<p>Tạo file <strong>role-devuser.yaml</strong>:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Role</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">default</span>
+</span></span><span style="display:flex;"><span>   <span style="color:#f92672">name</span>: <span style="color:#ae81ff">pod-reader</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">rules</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">apiGroups</span>: [<span style="color:#e6db74">&#34;&#34;</span>] <span style="color:#75715e"># indicates the core API group</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">resources</span>: [<span style="color:#e6db74">&#34;pods&#34;</span>]
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">verbs</span>: [<span style="color:#e6db74">&#34;get&#34;</span>, <span style="color:#e6db74">&#34;watch&#34;</span>, <span style="color:#e6db74">&#34;list&#34;</span>]
+</span></span></code></pre></div><p>Create role:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl apply -f role-devuser.yaml
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/079.png"></p>
+<ol start="13">
+<li>Tạo rolebinding cho role đã tạo trước đó:</li>
+</ol>
+<p>tạo file <strong>devuser-pod-reader-rolebinding.yaml</strong></p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-yaml" data-lang="yaml"><span style="display:flex;"><span><span style="color:#f92672">apiVersion</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io/v1</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">kind</span>: <span style="color:#ae81ff">RoleBinding</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">metadata</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">read-pods</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">namespace</span>: <span style="color:#ae81ff">default</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">subjects</span>:
+</span></span><span style="display:flex;"><span>- <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">User</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">devuser</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">roleRef</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">kind</span>: <span style="color:#ae81ff">Role</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">name</span>: <span style="color:#ae81ff">pod-reader</span>
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">apiGroup</span>: <span style="color:#ae81ff">rbac.authorization.k8s.io</span>
+</span></span></code></pre></div><p>Create role:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl apply -f devuser-pod-reader-rolebinding.yaml
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/080.png"></p>
+<ol start="14">
+<li>Dùng quyền admin trong cụm ubuntu tạo 1 pod trên namespace default:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl run nginx --image<span style="color:#f92672">=</span>nginx
+</span></span></code></pre></div><p>Sử dụng config-devuser kiểm tra pods trên namspace default và kube-system</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl --kubeconfig ~/.kube/config-devuser get pod -n default
+</span></span><span style="display:flex;"><span>kubectl --kubeconfig ~/.kube/config-devuser get pod -n kube-system
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/081.png"></p>
+<ol start="15">
+<li>Chuyển mode user devuser trong EC2 Cluster copy file <strong>config-devuser</strong> trong folder <strong>.kube</strong></li>
+</ol>
+<p>Sau khi copy đổi tên file config-devuser sang config.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>sudo su - devuser
+</span></span><span style="display:flex;"><span>mkdir .kube
+</span></span><span style="display:flex;"><span>cd .kube/
+</span></span><span style="display:flex;"><span>sudo cp /home/ubuntu/.kube/config-devuser /home/devuser/.kube/
+</span></span><span style="display:flex;"><span>sudo mv config-devuser config
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/082.png"></p>
+<ol start="16">
+<li>Tiến hành kiểm tra với user devuser:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-bash" data-lang="bash"><span style="display:flex;"><span>kubectl get pods -n default
+</span></span><span style="display:flex;"><span>kubectl get pods -n kube-system
+</span></span></code></pre></div><p><img alt="Cfn" src="/images/083.png"></p>
+<p>Như vậy thông qua bài Lab trên bạn đã phân quyền thành công.</p>
+
+
+
+
+
+<footer class=" footline" >
+	
+</footer>
+
+        
+        </div> 
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+        
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+        
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="/3-handsonlabs/3.3-backuprestoreetcd/" title="Backing Up and Restoring etcd"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="/4-cleanup/" title="Dọn dẹp tài nguyên  " style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+    
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="/js/clipboard.min.js?1723707792"></script>
+    <script src="/js/perfect-scrollbar.min.js?1723707792"></script>
+    <script src="/js/perfect-scrollbar.jquery.min.js?1723707792"></script>
+    <script src="/js/jquery.sticky.js?1723707792"></script>
+    <script src="/js/featherlight.min.js?1723707792"></script>
+    <script src="/js/highlight.pack.js?1723707792"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="/js/modernizr.custom-3.6.0.js?1723707792"></script>
+    <script src="/js/learn.js?1723707792"></script>
+    <script src="/js/hugo-learn.js?1723707792"></script>
+
+    <link href="/mermaid/mermaid.css?1723707792" rel="stylesheet" />
+    <script src="/mermaid/mermaid.js?1723707792"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-158079754-2', 'auto');
+  ga('send', 'pageview');
+
+</script>
+  </body>
+</html>
